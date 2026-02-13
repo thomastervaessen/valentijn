@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voor jou 💌</title>
+  <style>
+    :root{
+      --bg1:#101225;
+      --bg2:#1e1f45;
+      --card:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.15);
+      --border2:rgba(255,255,255,.12);
+      --text:#fff;
+      --muted:rgba(255,255,255,.85);
+      --accent1:#ff5ea8;
+      --accent2:#ff8fc6;
+      --sig:#ffd1e6;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      padding:24px;
+    }
+
+    #confetti{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    .hidden{ display:none !important; }
+
+    .card{
+      width:min(980px, 100%);
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      position:relative;
+      z-index:1;
+    }
+
+    header{
+      padding:22px;
+      border-bottom:1px solid var(--border2);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    header h1{ margin:0; font-size:28px; }
+    header p{ margin:8px 0 0; opacity:.85; }
+
+    .topRight{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      font-size:13px;
+      opacity:.95;
+      user-select:none;
+    }
+
+    .musicBtn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:800;
+    }
+    .musicBtn:active{ transform: translateY(1px); }
+
+    #lockScreen{
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.92);
+      backdrop-filter: blur(12px);
+      padding:24px;
+    }
+
+    .lockWrap{ width:min(560px, 100%); text-align:center; }
+
+    .lockTitle{
+      font-weight:900;
+      font-size:16px;
+      opacity:.85;
+      margin-bottom:12px;
+    }
+
+    .lockEnv{
+      width:min(520px, 100%);
+      height: 320px;
+      margin: 0 auto;
+      position: relative;
+      border-radius: 20px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      overflow:hidden;
+    }
+
+    .lockEnv .paper{
+      position:absolute;
+      left:14px; right:14px;
+      bottom:14px;
+      height: 78%;
+      border-radius: 16px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      transform: translateY(0%);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:16px;
+      gap:10px;
+      flex-direction:column;
+    }
+
+    .lockEnv .flap{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.14);
+      clip-path: polygon(0 0, 100% 0, 50% 58%);
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      z-index:3;
+    }
+
+    .lockEnv .seal{
+      position:absolute;
+      left:50%;
+      top: 60%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color:#1a1020;
+      user-select:none;
+      z-index:4;
+    }
+
+    .lockEnv .paper h2{ margin:0; font-size:18px; font-weight:900; }
+    .lockEnv .paper p{ margin:6px 0 0; opacity:.82; font-size:13px; line-height:1.35; }
+
+    .lockRow{
+      width:100%;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+
+    .lockInput{
+      flex:1;
+      min-width:210px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.22);
+      color:#fff;
+      font-size:16px;
+      outline:none;
+    }
+
+    .lockBtn{
+      padding:12px 14px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      font-weight:900;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color:#1a1020;
+      white-space:nowrap;
+    }
+
+    .lockMsg{ min-height:18px; opacity:.95; font-size:13px; margin-top:4px; }
+    .hintLine{ opacity:.65; font-size:12px; margin-top:6px; }
+
+    #lockScreen.opening .lockEnv .flap{ animation: flapOpen .60s ease forwards; }
+    #lockScreen.opening .lockEnv .paper{ animation: paperUp .95s .18s ease forwards; }
+    @keyframes flapOpen{ from { transform: rotateX(0deg); } to { transform: rotateX(160deg); } }
+    @keyframes paperUp{ from { transform: translateY(0%); } to { transform: translateY(-55%); } }
+    #lockScreen.fadeOut{ animation: lockOut .55s ease forwards; }
+    @keyframes lockOut{ to { opacity:0; visibility:hidden; } }
+
+    .reveal{
+      padding:22px;
+      display:grid;
+      gap:16px;
+      animation: fadeUp .5s ease both;
+    }
+    @keyframes fadeUp{ from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+    .grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns: 1fr;
+    }
+    @media(min-width:900px){ .grid{ grid-template-columns: 1.2fr .8fr; } }
+
+    .letter{
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--border2);
+      border-radius:16px;
+      padding:16px;
+      line-height:1.65;
+    }
+    .letter .sig{ margin-top:12px; font-weight:900; color:var(--sig); }
+    .typeTarget{ white-space: pre-wrap; }
+
+    .gallery{
+      background: rgba(0,0,0,.14);
+      border:1px solid var(--border2);
+      border-radius:16px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .galleryMain{
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      position:relative;
+    }
+    .galleryMain img{ width:100%; height:auto; display:block; }
+
+    .photoAudioHint{
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.22);
+      font-size:12px;
+      opacity:.92;
+      display:none;
+      max-width: calc(100% - 20px);
+      white-space: normal;
+      line-height: 1.25;
+    }
+    .photoAudioHint.show{ display:inline-flex; }
+
+    .polaroidCaption{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      font-size:13px;
+      opacity:.95;
+      line-height:1.35;
+    }
+
+    .thumbs{
+      display:flex; gap:10px; margin-top:10px;
+      overflow-x:auto; padding-bottom:4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .thumb{
+      flex:0 0 auto;
+      width:90px; height:62px;
+      border-radius:12px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.22);
+      cursor:pointer;
+      opacity:.8;
+      transition: opacity .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb.active{
+      opacity:1;
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.35);
+    }
+
+    .block{
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--border2);
+      border-radius:16px;
+      padding:16px;
+    }
+    .block .title{ font-weight:900; font-size:18px; }
+    .block .sub{ opacity:.85; margin-top:6px; line-height:1.35; }
+
+    .voucher{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      line-height:1.45;
+      animation: openCard .45s ease both;
+    }
+    @keyframes openCard{
+      from { opacity: 0; transform: rotateX(-25deg) translateY(-6px); }
+      to   { opacity: 1; transform: rotateX(0) translateY(0); }
+    }
+
+    button.primary{
+      padding:12px 14px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      font-weight:900;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color:#1a1020;
+    }
+    button.primary:active{ transform: translateY(1px); }
+    button:hover{ filter: brightness(1.03); }
+
+    .dateGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media(min-width:700px){ .dateGrid{ grid-template-columns: repeat(3, 1fr); } }
+
+    .dateEnv{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      padding:12px;
+      cursor:pointer;
+      transition: transform .15s ease, filter .2s ease, border-color .2s ease, opacity .2s ease;
+      min-height:150px;
+      position:relative;
+      overflow:hidden;
+    }
+    .dateEnv:hover{ filter: brightness(1.03); transform: translateY(-1px); }
+    .dateEnv .front{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      height:100%;
+      gap:10px;
+    }
+    .dateEnv .tag{ opacity:.75; font-size:12px; }
+    .dateEnv .big{ font-weight:900; font-size:18px; }
+    .dateEnv .mini{ opacity:.78; font-size:12px; line-height:1.35; }
+    .dateEnv .hint{
+      opacity:.92;
+      font-size:13px;
+      line-height:1.35;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .dateEnv .stamp{
+      position:absolute;
+      right:10px; bottom:10px;
+      width:44px; height:44px;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color:#1a1020;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      user-select:none;
+    }
+
+    .dateEnv .inside{
+      display:none;
+      height:100%;
+      animation: fadeUp .35s ease both;
+    }
+    .dateEnv.open{
+      border-color: rgba(255,255,255,.32);
+      transform: translateY(-2px);
+    }
+    .dateEnv.open .front{ display:none; }
+    .dateEnv.open .inside{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      height:100%;
+      gap:10px;
+    }
+    .dateEnv .ideaName{ font-weight:900; font-size:16px; }
+    .dateEnv .ideaDesc{ opacity:.9; font-size:13px; line-height:1.35; }
+    .dateEnv .note{ opacity:.75; font-size:12px; }
+
+    .dateEnv.locked{
+      opacity:.45;
+      filter: grayscale(1);
+      cursor:not-allowed;
+      transform:none !important;
+    }
+    .dateEnv.locked:hover{ filter: grayscale(1); }
+
+    .afterPick{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      animation: openCard .45s ease both;
+    }
+    .afterPick .text{ font-weight:800; opacity:.95; }
+    .afterPick .small{ font-size:12px; opacity:.75; line-height:1.35; margin-top:4px; }
+    .afterPick .left{ display:flex; flex-direction:column; gap:2px; min-width: 220px; }
+    .afterPick .btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .afterPick .copied{ font-size:12px; opacity:.8; display:none; }
+    .afterPick.showCopied .copied{ display:block; }
+
+    /* ✅ kleine statusregel onder shuffle-knop */
+    .dateStatus{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      font-size:12px;
+      opacity:.85;
+      line-height:1.35;
+    }
+
+    #eggInput{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.22);
+      color:#fff;
+      font-size:16px;
+      outline:none;
+      margin-top:10px;
+    }
+    #eggInput::placeholder{ color: rgba(255,255,255,.55); }
+
+    .eggHint{
+      margin-top:8px;
+      opacity:.7;
+      font-size:12px;
+      line-height:1.35;
+      word-break: break-word;
+    }
+
+    .egg{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.14);
+      opacity:.92;
+      line-height:1.45;
+      animation: fadeUp .5s ease both;
+    }
+
+    .foot{ padding: 0 22px 18px; opacity:.7; font-size:12px; }
+    .linklike{ text-decoration:underline; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div id="lockScreen" aria-hidden="false">
+    <div class="lockWrap">
+      <div class="lockTitle">💌 Voor <span id="toName">Nienke</span> 💗</div>
+
+      <div class="lockEnv" aria-label="envelop lockscreen">
+        <div class="paper">
+          <h2>🔒 Privé</h2>
+          <p>Voer de code in om de envelop te openen.</p>
+
+          <div class="lockRow">
+            <input id="lockCodeInput" class="lockInput" placeholder="Voer de code in…" autocomplete="one-time-code" />
+            <button id="lockOpenBtn" class="lockBtn" type="button">Open 💗</button>
+          </div>
+
+          <div id="lockMsg" class="lockMsg"></div>
+          <div class="hintLine">Hint: De toegangscode van jouw telefoon.</div>
+        </div>
+
+        <div class="flap"></div>
+        <div class="seal">💌</div>
+      </div>
+
+      <div style="margin-top:12px; opacity:.65; font-size:12px;">
+        (Na openen verschijnt je brief ✨)
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <header>
+      <div>
+        <h1>Voor jou 💌</h1>
+        <p>Een digitale Valentijnskaart. Alleen voor jou.</p>
+      </div>
+
+      <div class="topRight">
+        <div class="pill">🔐 <span id="statusText">Locked</span></div>
+        <button id="musicBtn" class="musicBtn" type="button">▶︎ Muziek</button>
+      </div>
+    </header>
+
+    <section id="reveal" class="reveal hidden" aria-hidden="true"></section>
+
+    <div class="foot">
+      <span class="linklike" id="resetBtn">Reset</span>
+    </div>
+  </div>
+
+  <audio id="bgm" preload="none"></audio>
+
+  <template id="revealTemplate">
+    <div class="grid">
+      <div class="letter">
+        <div style="opacity:.75; font-size:12px; margin-bottom:10px;">(speciaal voor jou)</div>
+        <div id="typeTarget" class="typeTarget"></div>
+        <div class="sig">— JOUW_NAAM</div>
+      </div>
+
+      <div class="gallery">
+        <div class="galleryMain">
+          <img id="mainImg" alt="Onze foto">
+          <div id="photoAudioHint" class="photoAudioHint">🔊 Tik op “Muziek” om audio toe te staan</div>
+        </div>
+        <div id="caption" class="polaroidCaption"></div>
+        <div class="thumbs" id="thumbs"></div>
+        <div style="opacity:.75; font-size:12px; margin-top:8px;">Tip: tik op de foto voor de volgende.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="title">10 dingen die ik aan jou bewonder ✨</div>
+      <div class="sub">Klik voor de volgende.</div>
+      <button id="reasonsBtn" class="primary" type="button">Laat er één zien</button>
+      <div id="reasonBox" class="voucher hidden"></div>
+    </div>
+
+    <div class="block">
+      <div class="title">Kies onze volgende date 💘</div>
+      <div class="sub">Kies één envelopje dat past bij je mood (daarna locken de anderen). Elk envelopje heeft een hint.</div>
+
+      <div id="dateGrid" class="dateGrid"></div>
+
+      <!-- ✅ nieuwe knop: nieuwe 6 voorstellen -->
+      <button id="shuffleDatesBtn" class="primary" type="button" style="margin-top:12px;">
+        Nieuwe voorstellen 🔄
+      </button>
+
+      <!-- ✅ statusregel -->
+      <div id="dateStatus" class="dateStatus">Kies een envelopje 💗</div>
+
+      <div id="afterPick" class="afterPick hidden">
+        <div class="left">
+          <div class="text">Ik regel de rest 💗</div>
+          <div class="small">Klik op “Stuur me deze keuze” om ’m te kopiëren en naar Thomas te sturen.</div>
+        </div>
+        <div class="btnRow">
+          <button id="copyChoiceBtn" class="primary" type="button">Stuur me deze keuze</button>
+          <div class="copied" id="copiedMsg">Gekopieerd ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="title">Tot slot nog een inside joke</div>
+      <div class="sub">Typ hier een woordje…</div>
+      <input id="eggInput" placeholder="(Cash or card?)" autocomplete="off" />
+      <div class="eggHint"></div>
+      <div id="eggContainer"></div>
+    </div>
+  </template>
+
+  <script>
+    // =========================
+    // ✅ PAS DIT AAN
+    // =========================
+    const SECRET_CODE = "061298";
+    const TO_NAME = "Nienke";
+    const YOUR_NAME = "Thomas";
+
+    // ✅ 14 foto's
+    const GALLERY_IMAGES = [
+      "photo1.jpg",
+      "photo2.jpg",
+      "photo3.jpg",
+      "photo4.jpg",
+      "photo5.jpg",
+      "photo6.jpg",
+      "photo7.jpeg",
+      "photo8.jpg",
+      "photo9.jpg",
+      "photo10.jpg",
+      "photo11.jpeg",
+      "photo12.jpeg",
+      "photo13.jpeg",
+      "photo14.jpeg"
+    ];
+
+    // ✅ 14 liedjes (zelfde volgorde als foto's)
+    const PHOTO_TRACKS = [
+      "song1.mp3",
+      "song2.mp3",
+      "song3.mp3",
+      "song4.mp3",
+      "song5.mp3",
+      "song6.mp3",
+      "song7.mp3",
+      "song8.mp3",
+      "song9.mp3",
+      "song10.mp3",
+      "song11.mp3",
+      "song12.mp3",
+      "song13.mp3",
+      "song14.mp3"
+    ];
+
+    // ✅ 14 captions (optioneel)
+    const GALLERY_CAPTIONS = [
+      "Zo dol op jou 💗",
+      "Chicken, beef, or pork? 💗",
+      "Altijd zo fijn met jou 💗",
+      "Spa avondjes en panda padjes met jou💗",
+      "Met niemand anders zoveel fun 💗",
+      "Mijn koala'tje 💗",
+      "Nooit genoeg hotelselfies 💗",
+      "Locket Love 💗",
+      "T 💗 N",
+      "Ken je Nienke Sandstorm? 💗",
+      "Moest van de Co...💗",
+      "Zo gek op mijn Ca2'tje💗",
+      "Leuk stelletje. Ze hebben wel een rugzakje💗",
+      "Echt een strike gegooid met jou 💗"
+    ];
+
+    // =========================
+    // ✅ Date pool (19) + upgrades
+    // =========================
+    const DATE_IDEAS = [
+      { hint: "Voor als je zin hebt in magie en suiker… ✨", name: "Dagje Efteling", desc: "Attracties, warme choco en samen verdwalen in sprookjes." },
+      { hint: "Voor als je wil winnen met een drankje erbij… 🎲", name: "Bordspelletjes café", desc: "Samen spelen, lachen, en jij mag mij compleet slopen met Risk." },
+      { hint: "Voor als je wil relaxen en bubbelen… ♨️", name: "Zwemmen en/of sauna", desc: "Warm water, stoom en genieten van Nienke's blote billen." },
+      { hint: "Voor als je een stukje universum met mij wil delen… 🌌", name: "Sterren kijken (telescoop)", desc: "Dekentje mee, warme witte chocolademelk, en samen naar boven kijken." },
+      { hint: "Voor als je zin hebt om lekker fout te doen… 🪩", name: "Rolschaats disco", desc: "Discolicht, muziek, en hopelijk heel blijven." },
+      { hint: "Voor als je samen iets nieuws wil proberen… 💃", name: "Samen een dansles", desc: "Stijldansen of twerken 'Pony', jij kiest" },
+      { hint: "Voor als je wil knuffelen in het donker… 🍿", name: "Bioscoop", desc: "Jij kiest de film, ik regel de popcorn voor mij, en chippies en autodroppies voor jou." },
+      { hint: "Voor als je frisse lucht + zoet wil… 🥞", name: "Wandelen + pannenkoeken", desc: "Eerst lekker lopen, daarna pannenkoek-geluk." },
+      { hint: "Voor als je zin hebt in puzzels oplossen, ontsnappen, en spanning… 🔐", name: "Escape room", desc: "Samen opgesloten zitten, dat is met jou niet erg. Let's go!" },
+      { hint: "Voor als je wil ‘aww’ zeggen bij elk dier… 🐾", name: "Dierentuin", desc: "Dieren kijken, en selfies met jou en een koala maken" },
+      { hint: "Voor als je panda pads en knusheid wil… 🕯️", name: "Spa-avondje thuis", desc: "Maskertjes, massage, dekentje en een lekkere full-body massage voor jou." },
+      { hint: "Voor als je even keihard wil gaan… 🏎️", name: "Karten", desc: "Ik laat je winnen (misschien). Daarna snackies." },
+      { hint: "Voor als je wil springen alsof we 12 zijn… 🤸", name: "Springkussen park", desc: "Zachte valpartijen en veel lachen." },
+      { hint: "Voor als je zin hebt in ‘wij samen’ in een ander bed… 🧳", name: "Weekendje weg", desc: "Nieuwe plek, samen wakker worden, en hotelselfies natuurlijk." },
+      { hint: "Voor als je zin hebt in iets cultureels… 🎨", name: "Museum bezoeken", desc: "Rustig slenteren, jouw hand in de mijne, koffie achteraf." },
+      { hint: "Voor als je wil doen alsof we heel volwassen zijn… 🛏️", name: "Woonboulevard: bedden testen", desc: "‘Gewoon even kijken’… en vooral kijken hoe hard we hier op kunnen gaan..." },
+      { hint: "Voor als je blij wil worden van plantjes… 🌿", name: "Tuincentrum", desc: "Rondlopen, inspiratie opdoen, en iets moois voor onze tuin uitkiezen." },
+      { hint: "Voor als je met een mini-budget iets liefs wil scoren… 🛍️", name: "Kleren voor elkaar kopen", desc: "Kijken wie de leukste outfit bij elkaar kan scoren voor de ander in de Primark 😂" },
+      { hint: "Voor als je wil dat we elkaar nog beter leren kennen… 🧠", name: "We leren elkaar iets", desc: "Jij leert mij iets van jou, ik jou iets van mij." }
+    ];
+
+    const REASONS = [
+      "Je bent zó ontzettend mooi. Van die ogen krijg ik nooit genoeg.",
+      "Je bent heel gevoelig. Je kwetsbaarheid en gevoeligheid durf je steeds meer aan me te laten zien.",
+      "Je bent heerlijk jezelf (en dat vind ik prachtig).",
+      "Ik kan zo heerlijk lachen met je. Vooral als je weer iets gezegd hebt wat je niet zo bedoelde.",
+      "Je doet ontzettend veel moeite voor de relatie, ook als het soms even tegenzit.",
+      "Je bent echt lekker knettergek soms.",
+      "Je ziet er altijd zo verzorgd en mooi uit.",
+      "Je kunt zo heerlijk koken. En genieten van lekker eten en snackies.",
+      "Je laat me echt op mijn gemak voelen bij je.",
+      "Je bent zo lief en zorgzaam, voor een ander zorgen zit in je DNA."
+    ];
+
+    const LETTER =
+`Liefste Nienke, mijn vriendinnetje,
+
+Wat kan er een hoop gebeuren in een korte tijd.
+
+Daar stond je dan, afgelopen september, in de lobby in Aberdeen. En zo liep je mijn leven in — eigenlijk met maar drie woordjes: “chicken, beef, or pork.”
+Zelden heb ik zo hard gelachen als die avond. Behalve misschien toen we erachter kwamen dat ik auntieru aan het reposten was op Insta. En dan Triominos… ik kan je vertellen: vaak haak ik een beetje af als mensen lang bordspelletjes uitleggen, maar van jou kon ik geen genoeg krijgen. Jij die het, op de Nienke-manier, steeds weer met zoveel enthousiasme aan me probeerde uit te leggen (Nienke wat ben je nou aan het "autisten"). Ik vond het zó lief. En zó jij.
+
+En een paar weken later kwam dat ene appje. Een klein gebaar, maar het voelde als een draadje dat ons aan elkaar vastknoopte.
+Je werd onderdeel van mijn leven — niet stormachtig, niet als een frisse wind die alles omver blaast, maar juist zacht en stil. Alsof ik je kende als een oude, vertrouwde bekende. Iemand die er stiekem altijd al was geweest, en die ik nu pas echt weer terugzag.
+De memes en reels volgden snel, en contact werd iets vanzelfsprekends; alsof wij een eigen taal kregen, ergens tussen grapjes en dagelijkse momenten.
+
+Crew control is mij, zoals je weet, vaak niet goedgezind… maar toen was daar ineens onze vierdaagse pairing samen.
+Wat was dat fijn. Hoe we konden praten, lachen, stil zijn — en hoe het toch klopte. Bijna onbegrijpelijk hoe makkelijk dat ging. Alsof ik jou al veel langer kende dan de kalender kan uitleggen.
+
+En nu zijn we alweer een paar maanden verder, en ben je eigenlijk al niet meer weg te denken uit mijn dagelijks leven.
+Ik sta op met jou in mijn gedachten. En jij bent het laatste waar ik aan denk voor ik ga slapen. Bij jou zijn is als thuiskomen. En wat hebben we al veel mooie, kleine dingen samen groot gemaakt:
+wandelen op de Veluwe, Mario Karten, een Officeje kijken, lekker lunchen bij Wink of eten in Amstelveen… samen kokkerellen of gewoon pizza bestellen, naar de bios, knuffelen op de bank. Slapen bij jou thuis of in een hotel. Bowlen, de Van Gogh Experience in Utrecht, de arcade, shoppen… het is bijna te veel om op te noemen. Het zijn allemaal momenten die zo simpel lijken, maar die bij jou alles krijgen: warmte, plezier, rust.
+
+Lieve Nienke… wat ben je toch een ongelooflijk mooie vrouw.
+Hoe je beweegt, hoe je praat, en hoe je lacht — iedere keer als ik je zie maakt mijn hart een sprongetje. Het is de reden waarom ik zo verslaafd ben aan jouw hotelselfies. Je bent mijn zonnetje: ik voel je warmte, en waar het donker is, doe jij een lichtje aan.
+Niet alleen ben je beeldschoon van buiten. Stukje bij beetje leer ik je steeds beter kennen, en daar word ik alleen maar verliefder van. Je bent zó lief en zorgzaam. En kwetsbaar en gevoelig als je bent, durf je dat steeds meer te laten zien. Ik zie hoeveel moeite je doet voor ons — ook als dingen soms moeilijk zijn — en ik vind het zo bijzonder dat je je steeds meer op je gemak voelt en je steeds kwetsbaarder durft op te stellen bij mij.
+
+En ondertussen ben je ook heerlijk knettergek. Ik moet nog steeds lachen om hoe jij als een marrokaantje in die auto zit te rijden. En hoe je stiekem autodroppies probeert te snoepen alsof ik het niet door heb. Ik ken niemand die zo blij wordt van snackies als jij — en eerlijk: ik vind dat zó schattig. Net als hoe leuk ik het vind om memes met jou na te doen, of om samen met je te dansen in de keuken. Net als hoe lief je bent als je lekkere broodjes voor me maakt. Nog nooit heeft een gebakken eitje zo lekker geproefd. En hoe je altijd zó lekker ruikt, en er altijd zo mooi uitziet. Je bent echt alles tegelijk: zacht, grappig, warm, gek — en precies goed.
+
+Lief vriendinnetje van me,
+Deze digitale Valentijnskaart is alleen voor jou. Met veertien foto’s van ons samen met liedjes die voor ons op een of andere manier iets betekenen.
+En ik kijk uit naar meer: naar alle mooie herinneringen die we nog gaan maken, naar reizen en nieuwe plekken, naar nieuwe foto’s en nieuwe grapjes. Maar ook naar alle gewone dagen die we samen bijzonder maken. Naar al die kleine stukjes die samen iets groots worden.
+
+Ik hou van jou.
+
+Dikke kus en knuffel,
+
+
+`;
+
+    const EGG_TRIGGER = "card";
+    const EGG_MESSAGE = "50 cent surcharge!";
+
+    // =========================
+    // Helpers
+    // =========================
+    function normalize(s){ return (s || "").trim().toLowerCase().replace(/\s+/g, ""); }
+    function ensureLengths(){
+      const n = GALLERY_IMAGES.length;
+      if (PHOTO_TRACKS.length !== n) console.warn("PHOTO_TRACKS lengte != GALLERY_IMAGES lengte. Verwacht:", n);
+      if (GALLERY_CAPTIONS.length !== n) console.warn("GALLERY_CAPTIONS lengte != GALLERY_IMAGES lengte. Verwacht:", n);
+    }
+    ensureLengths();
+
+    // =========================
+    // Elements
+    // =========================
+    document.getElementById("toName").textContent = TO_NAME;
+
+    const lockScreen = document.getElementById("lockScreen");
+    const lockCodeInput = document.getElementById("lockCodeInput");
+    const lockOpenBtn = document.getElementById("lockOpenBtn");
+    const lockMsg = document.getElementById("lockMsg");
+
+    const statusText = document.getElementById("statusText");
+    const reveal = document.getElementById("reveal");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const musicBtn = document.getElementById("musicBtn");
+    const bgm = document.getElementById("bgm");
+    let musicOn = false;
+    let currentPhotoIndex = 0;
+
+    function setStatusLocked(){ statusText.textContent = "Locked"; }
+    function setStatusUnlocked(){ statusText.textContent = "Unlocked"; }
+    function setMusicButton(){ musicBtn.textContent = musicOn ? "⏸︎ Muziek" : "▶︎ Muziek"; }
+    setMusicButton();
+
+    // =========================
+    // Confetti
+    // =========================
+    const confettiCanvas = document.getElementById("confetti");
+    const cctx = confettiCanvas.getContext("2d");
+
+    function resizeConfetti(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti(durationMs = 1000){
+      const w = confettiCanvas.width;
+      const h = confettiCanvas.height;
+
+      const pieces = Array.from({length: 150}, () => ({
+        x: Math.random() * w,
+        y: -20 - Math.random() * h * 0.2,
+        r: 3 + Math.random() * 4,
+        vy: 2 + Math.random() * 5.5,
+        vx: -2.2 + Math.random() * 4.4,
+        rot: Math.random() * Math.PI,
+        vrot: -0.22 + Math.random() * 0.44,
+        alpha: 1
+      }));
+
+      const start = performance.now();
+      function frame(t){
+        const elapsed = t - start;
+        cctx.clearRect(0,0,w,h);
+
+        for (const p of pieces){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vrot;
+          p.alpha = Math.max(0, 1 - elapsed / durationMs);
+
+          cctx.save();
+          cctx.globalAlpha = p.alpha;
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+          cctx.fillStyle = "rgba(255,255,255,.92)";
+          cctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+          cctx.restore();
+        }
+
+        if (elapsed < durationMs) requestAnimationFrame(frame);
+        else cctx.clearRect(0,0,w,h);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // =========================
+    // Typewriter
+    // =========================
+    function typewriterInto(el, text, speedMs = 18){
+      el.textContent = "";
+      let i = 0;
+
+      function step(){
+        el.textContent = text.slice(0, i);
+        i++;
+
+        if (i <= text.length){
+          const ch = text[i-1] || "";
+          let delay = speedMs;
+          if (ch === "\n") delay = 120;
+          else if (ch === "." || ch === "!" || ch === "?") delay = 180;
+          else if (ch === ",") delay = 90;
+
+          setTimeout(() => requestAnimationFrame(step), delay);
+        }
+      }
+      step();
+    }
+
+    // =========================
+    // Audio switching per photo
+    // =========================
+    function setTrackForPhoto(index){
+      const track = PHOTO_TRACKS[index] || "";
+      if (!track) return;
+      if (bgm.dataset.track === track) return;
+
+      bgm.pause();
+      musicOn = false;
+      setMusicButton();
+
+      bgm.innerHTML = "";
+      const src = document.createElement("source");
+      src.src = track;
+      src.type = "audio/mpeg";
+      bgm.appendChild(src);
+      bgm.load();
+      bgm.dataset.track = track;
+    }
+
+    async function tryAutoPlayPhotoTrack(index, hintEl){
+      const track = PHOTO_TRACKS[index] || "";
+      if (!track) return;
+
+      setTrackForPhoto(index);
+
+      try{
+        await bgm.play();
+        musicOn = true;
+        setMusicButton();
+        if (hintEl) hintEl.classList.remove("show");
+      } catch(e){
+        musicOn = false;
+        setMusicButton();
+        if (hintEl) hintEl.classList.add("show");
+      }
+    }
+
+    // =========================
+    // Gallery
+    // =========================
+    function buildGallery(thumbsEl, mainImg, captionEl, hintEl){
+      thumbsEl.innerHTML = "";
+
+      function setPhoto(idx){
+        currentPhotoIndex = idx;
+        mainImg.src = GALLERY_IMAGES[idx];
+        captionEl.textContent = GALLERY_CAPTIONS[idx] || "";
+
+        document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
+        const btn = thumbsEl.querySelector(`[data-idx="${idx}"]`);
+        if (btn) btn.classList.add("active");
+
+        tryAutoPlayPhotoTrack(idx, hintEl);
+      }
+
+      GALLERY_IMAGES.forEach((src, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "thumb" + (idx === 0 ? " active" : "");
+        btn.dataset.idx = String(idx);
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "Foto " + (idx + 1);
+
+        btn.appendChild(img);
+        btn.addEventListener("click", () => setPhoto(idx));
+        thumbsEl.appendChild(btn);
+      });
+
+      setPhoto(0);
+
+      mainImg.addEventListener("click", () => {
+        const next = (currentPhotoIndex + 1) % GALLERY_IMAGES.length;
+        setPhoto(next);
+      });
+    }
+
+    // =========================
+    // Clipboard helper
+    // =========================
+    async function copyToClipboard(text){
+      try{
+        if (navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch(e){}
+      return false;
+    }
+
+    // =========================
+    // ✅ Date envelopes + upgrades
+    //  - Upgrade 1: nooit exact dezelfde set 2x achter elkaar
+    //  - Upgrade 2: statusregel (“Nieuwe set geladen ✨” / info)
+    // =========================
+    function buildDateEnvelopes(dateGridEl, afterPickEl, copyBtnEl, copiedMsgEl, shuffleBtnEl, statusEl){
+      const N = 6;
+
+      let picked = false;
+      let pickedIdea = null;
+      let currentSet = [];
+      let prevSetKey = null;
+
+      function setStatus(msg){
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+      }
+
+      function setKeyForSet(set){
+        // key: gesorteerde namen -> string
+        return set.map(x => x.name).slice().sort().join("||");
+      }
+
+      function pickRandomSetNotSame(){
+        // probeer een paar keer om een andere set te pakken dan de vorige
+        // (bij 19 ideeën is de kans op exact dezelfde set al laag, maar dit maakt het zekerder)
+        let tries = 0;
+        let set = null;
+        let key = null;
+
+        do {
+          const shuffled = [...DATE_IDEAS].sort(() => Math.random() - 0.5);
+          set = shuffled.slice(0, N);
+          key = setKeyForSet(set);
+          tries++;
+        } while (key === prevSetKey && tries < 12);
+
+        prevSetKey = key;
+        return set;
+      }
+
+      function buildCopyText(idea){
+        const now = new Date();
+        const pad = (n) => String(n).padStart(2,"0");
+        const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        return `💘 Date-keuze (${stamp})
+Voor: ${TO_NAME}
+Gekozen envelopje: ${idea.name}
+Hint: ${idea.hint}
+Omschrijving: ${idea.desc}
+
+— verstuurd vanaf de liefdes-envelop 💌`;
+      }
+
+      async function onCopy(){
+        if (!pickedIdea) return;
+        const text = buildCopyText(pickedIdea);
+
+        const ok = await copyToClipboard(text);
+        if (ok){
+          afterPickEl.classList.add("showCopied");
+          copiedMsgEl.textContent = "Gekopieerd ✅";
+          setTimeout(() => afterPickEl.classList.remove("showCopied"), 1800);
+        } else {
+          window.prompt("Kopieer dit bericht en stuur het naar Thomas:", text);
+        }
+      }
+
+      copyBtnEl.addEventListener("click", onCopy, { once:false });
+
+      function renderSet(set, statusMsg){
+        dateGridEl.innerHTML = "";
+        currentSet = set;
+
+        if (!picked){
+          const total = DATE_IDEAS.length;
+          setStatus(`${statusMsg} (Set: ${N} van ${total})`);
+        }
+
+        for (let i = 0; i < currentSet.length; i++){
+          const idea = currentSet[i];
+
+          const env = document.createElement("div");
+          env.className = "dateEnv";
+
+          env.innerHTML = `
+            <div class="front">
+              <div class="tag">💌 Envelopje</div>
+              <div class="big">Open mij</div>
+              <div class="mini">Klik om jouw keuze te maken…</div>
+              <div class="hint">${idea.hint}</div>
+            </div>
+
+            <div class="inside">
+              <div>
+                <div class="tag">💘 Date idee</div>
+                <div class="ideaName">${idea.name}</div>
+                <div class="ideaDesc" style="margin-top:6px;">${idea.desc}</div>
+              </div>
+              <div class="note">Dit is jouw keuze 💗</div>
+            </div>
+
+            <div class="stamp">💗</div>
+          `;
+
+          env.addEventListener("click", () => {
+            if (picked) return;
+
+            env.classList.add("open");
+            picked = true;
+            pickedIdea = idea;
+
+            afterPickEl.classList.remove("hidden");
+            launchConfetti(700);
+
+            // lock de rest
+            const all = Array.from(dateGridEl.querySelectorAll(".dateEnv"));
+            all.forEach(other => {
+              if (other !== env){
+                other.classList.add("locked");
+                other.title = "Je hebt al een envelopje gekozen 💗";
+              }
+            });
+
+            // disable shuffle knop + status update
+            if (shuffleBtnEl){
+              shuffleBtnEl.disabled = true;
+              shuffleBtnEl.style.opacity = "0.6";
+              shuffleBtnEl.style.cursor = "not-allowed";
+              shuffleBtnEl.textContent = "Keuze gemaakt 💗";
+            }
+            setStatus(`Gekozen: ${idea.name} 💗`);
+          });
+
+          dateGridEl.appendChild(env);
+        }
+      }
+
+      function shuffleNow(){
+        if (picked) return;
+        renderSet(pickRandomSetNotSame(), "Nieuwe set geladen ✨");
+        launchConfetti(350);
+      }
+
+      // init set
+      renderSet(pickRandomSetNotSame(), "Kies een envelopje 💗");
+
+      // shuffle knop
+      if (shuffleBtnEl){
+        shuffleBtnEl.addEventListener("click", shuffleNow);
+      }
+    }
+
+    // =========================
+    // Egg
+    // =========================
+    function setupEgg(inputEl, container){
+      let shown = false;
+      inputEl.addEventListener("input", () => {
+        if (shown) return;
+        const val = normalize(inputEl.value);
+        if (val.includes(normalize(EGG_TRIGGER))){
+          shown = true;
+          const div = document.createElement("div");
+          div.className = "egg";
+          div.textContent = EGG_MESSAGE;
+          container.appendChild(div);
+          launchConfetti(800);
+          inputEl.blur();
+        }
+      });
+    }
+
+    // =========================
+    // Reveal
+    // =========================
+    function showReveal(){
+      const tpl = document.getElementById("revealTemplate");
+      reveal.innerHTML = "";
+      reveal.appendChild(tpl.content.cloneNode(true));
+
+      reveal.classList.remove("hidden");
+      reveal.setAttribute("aria-hidden", "false");
+      setStatusUnlocked();
+
+      const typeTarget = document.getElementById("typeTarget");
+      const sigEl = document.querySelector(".sig");
+      const thumbsEl = document.getElementById("thumbs");
+      const mainImg = document.getElementById("mainImg");
+      const captionEl = document.getElementById("caption");
+      const hintEl = document.getElementById("photoAudioHint");
+
+      const reasonsBtn = document.getElementById("reasonsBtn");
+      const reasonBox = document.getElementById("reasonBox");
+
+      const dateGridEl = document.getElementById("dateGrid");
+      const afterPickEl = document.getElementById("afterPick");
+      const copyChoiceBtn = document.getElementById("copyChoiceBtn");
+      const copiedMsgEl = document.getElementById("copiedMsg");
+      const shuffleDatesBtn = document.getElementById("shuffleDatesBtn");
+      const dateStatusEl = document.getElementById("dateStatus");
+
+      const eggInput = document.getElementById("eggInput");
+      const eggContainer = document.getElementById("eggContainer");
+
+      sigEl.textContent = "— " + YOUR_NAME;
+
+      typewriterInto(typeTarget, LETTER, 18);
+      buildGallery(thumbsEl, mainImg, captionEl, hintEl);
+
+      let reasonIndex = 0;
+      reasonsBtn.addEventListener("click", () => {
+        reasonBox.classList.remove("hidden");
+        reasonBox.textContent = REASONS[reasonIndex % REASONS.length];
+        reasonIndex++;
+        launchConfetti(550);
+      });
+
+      buildDateEnvelopes(
+        dateGridEl,
+        afterPickEl,
+        copyChoiceBtn,
+        copiedMsgEl,
+        shuffleDatesBtn,
+        dateStatusEl
+      );
+
+      setupEgg(eggInput, eggContainer);
+    }
+
+    // =========================
+    // Unlock logic
+    // =========================
+    function unlockSuccess(){
+      localStorage.setItem("valentine_unlocked", "true");
+
+      lockScreen.classList.add("opening");
+      launchConfetti(900);
+
+      setTimeout(() => { lockScreen.classList.add("fadeOut"); }, 1050);
+      setTimeout(() => { lockScreen.remove(); showReveal(); }, 1600);
+    }
+
+    function tryUnlock(){
+      const entered = normalize(lockCodeInput.value);
+      const correct = normalize(SECRET_CODE);
+
+      if (!entered){
+        lockMsg.textContent = "Voer eerst een code in 🙂";
+        return;
+      }
+      if (entered === correct){
+        lockMsg.textContent = "";
+        unlockSuccess();
+      } else {
+        lockMsg.textContent = "Hmmm… bijna 😉 Probeer nog eens.";
+        lockCodeInput.select();
+      }
+    }
+
+    lockOpenBtn.addEventListener("click", tryUnlock);
+    lockCodeInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryUnlock(); });
+    lockCodeInput.focus();
+
+    const unlockedBefore = localStorage.getItem("valentine_unlocked") === "true";
+    if (unlockedBefore){
+      lockScreen.remove();
+      showReveal();
+      setStatusUnlocked();
+    } else {
+      setStatusLocked();
+    }
+
+    // Reset
+    resetBtn.addEventListener("click", () => {
+      localStorage.removeItem("valentine_unlocked");
+      location.reload();
+    });
+
+    // =========================
+    // Muziekknop
+    // =========================
+    musicBtn.addEventListener("click", async () => {
+      try{
+        const track = PHOTO_TRACKS[currentPhotoIndex] || "";
+        if (!track) return;
+
+        setTrackForPhoto(currentPhotoIndex);
+
+        if (!musicOn){
+          await bgm.play();
+          musicOn = true;
+        } else {
+          bgm.pause();
+          musicOn = false;
+        }
+        setMusicButton();
+
+        const hintEl = document.getElementById("photoAudioHint");
+        if (hintEl) hintEl.classList.remove("show");
+      } catch(e){
+        musicOn = false;
+        setMusicButton();
+      }
+    });
+
+    bgm.addEventListener("pause", () => { musicOn = false; setMusicButton(); });
+    bgm.addEventListener("play",  () => { musicOn = true;  setMusicButton(); });
+  </script>
+</body>
+</html>
